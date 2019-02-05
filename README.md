@@ -6,6 +6,12 @@ more cats than the other players.
 This game was written by [Brent P. Newhall](http://brentnewhall.com) as part
 of his weekly video game challenge.
 
+## Daily Log
+
+| Day | Hours |
+| --- | ----- |
+| 2019-02-05 | 1:00 |
+
 ## Resources
 
 The cat sprites are from
