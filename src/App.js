@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import openSocket from 'socket.io-client';
 
 class App extends Component {
+  constructor( props ) {
+    super( props );
+    this.state = {
+      socket: openSocket('http://localhost:1337'),
+      message: 'Waiting for another player',
+    }
+  }
   render() {
     return (
       <div className="App">
@@ -19,6 +27,7 @@ class App extends Component {
           >
             Learn React
           </a>
+          Message: {this.state.message}
         </header>
       </div>
     );
