@@ -13,10 +13,13 @@ class App extends Component {
       player: {
         x: 250,
         y: 250,
-      }
+      },
+      playerNumber: 0,
     }
     this.state.socket.on("place cat", (cat) => this.placeCat(cat) );
+    this.state.socket.on("player number", (playerNumber) => this.setPlayerNumber(playerNumber) );
     this.sendCollect = this.sendCollect.bind( this );
+    this.setPlayerNumber = this.setPlayerNumber.bind( this );
     this.placeCat = this.placeCat.bind( this );
     this.keyPressed = this.keyPressed.bind( this );
   }
@@ -24,6 +27,10 @@ class App extends Component {
   sendCollect() {
     //console.log( "Sending collection to server" );
     this.state.socket.emit( "collect", "cat" );
+  }
+
+  setPlayerNumber( playerNumber ) {
+    this.setState( { playerNumber } );
   }
 
   /*
@@ -68,14 +75,15 @@ class App extends Component {
         width: '60px',
         height: '75px',
     };
+    let playerImgUrl = `/images/cat-player-${this.state.playerNumber}.png`;
     return (
       <div className="App">
         <header className="App-header">
           <button onClick={() => this.sendCollect()}>Collect</button>
-          Message: {this.state.message}
+          Player: {this.state.playerNumber} Message: {this.state.message}
         </header>
         {catImages}
-        <img src="/images/cat-player.png" alt="player" style={playerStyle} />
+        <img src={playerImgUrl} alt="player" style={playerStyle} />
         <KeyboardEventHandler
           handleKeys={['w', 'a', 's', 'd', ' ']}
           onKeyEvent={(key, e) => this.keyPressed(key)} />
