@@ -50,14 +50,24 @@ class App extends Component {
     else if( key === 'd' ) {
       this.setState( { player: { x: this.state.player.x + 10, y: this.state.player.y } } );
     }
+    else if( key === ' ' ) {
+      this.state.socket.emit( "collect", "cat" );
+    }
   }
 
   render() {
     const catImages = this.state.cats.map( (cat, index) => {
       const catStyle = { left: cat.x, top: cat.y };
-      return <img src="/images/catwalkx4.gif" style={catStyle} className="Cat" alt={"cat" + index} key={"cat" + index} />
+      return <img src="/images/catwalkx4.gif" style={catStyle} className="Cat"
+          alt={"cat" + index} key={"cat" + index} />
     });
-    const playerStyle = { position: 'absolute', left: this.state.player.x, top: this.state.player.y };
+    const playerStyle = {
+        position: 'absolute',
+        left: this.state.player.x,
+        top: this.state.player.y,
+        width: '60px',
+        height: '75px',
+    };
     return (
       <div className="App">
         <header className="App-header">
@@ -65,11 +75,10 @@ class App extends Component {
           Message: {this.state.message}
         </header>
         {catImages}
-        <img src="/images/player.png" alt="player" style={playerStyle} />
+        <img src="/images/cat-player.png" alt="player" style={playerStyle} />
         <KeyboardEventHandler
-          handleKeys={['w', 'a', 's', 'd']}
+          handleKeys={['w', 'a', 's', 'd', ' ']}
           onKeyEvent={(key, e) => this.keyPressed(key)} />
-        />
       </div>
     );
   }
