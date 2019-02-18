@@ -17,6 +17,7 @@ class App extends Component {
       playerNumber: 0,
     }
     this.state.socket.on("place cat", (cat) => this.placeCat(cat) );
+    this.state.socket.on("remove cat", (cat) => this.removeCat(cat) );
     this.state.socket.on("player number", (playerNumber) => this.setPlayerNumber(playerNumber) );
     this.sendCollect = this.sendCollect.bind( this );
     this.setPlayerNumber = this.setPlayerNumber.bind( this );
@@ -26,7 +27,11 @@ class App extends Component {
 
   sendCollect() {
     //console.log( "Sending collection to server" );
-    this.state.socket.emit( "collect", "cat" );
+    this.state.cats.forEach( (cat, index) => {
+      if( Math.abs( cat.x - this.state.player.x ) < 10  &&
+          Math.abs( cat.y - this.state.player.y ) < 10  )
+        this.state.socket.emit( "collect", "cat", index );
+    })
   }
 
   setPlayerNumber( playerNumber ) {
@@ -39,6 +44,17 @@ class App extends Component {
   placeCat(cat) {
     //console.log( "Placing cat " + cat );
     this.setState( { cats: [...this.state.cats, cat] } );
+  }
+
+  removeCat(catToRemove) {
+    console.log( "Removing cat ", catToRemove );
+    let newCats = [];
+    this.state.cats.forEach( (cat) => {
+      if( ! (cat.x === catToRemove.x  &&  cat.y === catToRemove.y ) ) {
+        newCats.push( cat );
+      }
+    } );
+    this.setState( { cats: newCats } );
   }
 
   /*
@@ -57,8 +73,8 @@ class App extends Component {
     else if( key === 'd' ) {
       this.setState( { player: { x: this.state.player.x + 10, y: this.state.player.y } } );
     }
-    else if( key === ' ' ) {
-      this.state.socket.emit( "collect", "cat" );
+    else if( key === 'space' ) {
+      this.sendCollect();
     }
   }
 
@@ -76,6 +92,9 @@ class App extends Component {
         height: '75px',
     };
     let playerImgUrl = `/images/cat-player-${this.state.playerNumber}.png`;
+    if( this.state.playerNumber > 3 ) {
+      playerImgUrl = `/images/cat-player-1.png`;
+    }
     return (
       <div className="App">
         <header className="App-header">
@@ -85,7 +104,7 @@ class App extends Component {
         {catImages}
         <img src={playerImgUrl} alt="player" style={playerStyle} />
         <KeyboardEventHandler
-          handleKeys={['w', 'a', 's', 'd', ' ']}
+          handleKeys={['w', 'a', 's', 'd', 'space']}
           onKeyEvent={(key, e) => this.keyPressed(key)} />
       </div>
     );
